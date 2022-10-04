@@ -1,19 +1,27 @@
 const db = require("./db");
 const express = require("express");
+const helmet = require("helmet");
 const path = require("path");
-const { urlencoded } = require("express");
-const cookieParser = require("cookie-parser");
 const app = express();
 const { engine } = require("express-handlebars");
+const cookieSession = require("cookie-session");
+const { count } = require("console");
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(
+    cookieSession({
+        secret: process.env.SESSION_SECRET,
+        maxAge: 1000 * 60 * 60 * 24 * 14,
+    })
+);
 app.use("/static", express.static(path.join(__dirname, "static")));
 const PORT = 8080;
 
+app.use(helmet());
+
 app.get("/", (req, res) => {
-    if (req.cookies.signed) {
+    if (!!req.session.signatureId) {
         res.redirect("/thanks");
     } else {
         res.redirect("/sign");
@@ -21,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/sign", (req, res) => {
-    if (req.cookies.signed) {
+    if (!!req.session.signatureId) {
         res.redirect("/thanks");
     } else {
         res.render("form", {
@@ -30,7 +38,7 @@ app.get("/sign", (req, res) => {
             layout: "main",
             data: {
                 imagelink:
-                    "https://dictionary.cambridge.org/de/images/full/tree_noun_001_18152.jpg?version=5.0.252",
+                    "https://dictionary.cambridge.org/de/images/full/tree_noun_001_18152.jpg",
                 imagedescription: "tree",
                 campaigntext: "Save Berlin's Trees!",
                 description: "Help prevent the dying of trees.",
@@ -40,22 +48,49 @@ app.get("/sign", (req, res) => {
 });
 
 app.post("/sign", (req, res) => {
+    console.log("posted!");
+    console.log(`${req.body.firstname.trim()},
+            ${req.body.lastname.trim()},
+            ${req.body.signature}`);
     if (req.body.firstname && req.body.lastname && req.body.signature) {
-        res.cookie("signed", true);
+        db.createSignatureEntry(
+            req.body.firstname.trim(),
+            req.body.lastname.trim(),
+            req.body.signature
+        ).then((entry) => {
+            req.session.signatureId = entry.rows[0].id;
+            res.redirect("/thanks");
+        });
+    } else if (req.body.firstname && req.body.lastname) {
+        db.createUser(req.body.firstname.trim(), req.body.lastname.trim()).then(
+            (entry) => {
+                req.session.signatureId = entry.rows[0].id;
+            }
+        );
     }
-    db.createSignatureEntry(
-        req.body.firstname,
-        req.body.lastname,
-        req.body.signature
-    );
 });
 
 app.get("/thanks", (req, res) => {
-    if (!req.cookies.signed) {
+    if (!req.session.signatureId) {
         res.redirect("/sign");
     } else {
-        res.render("thanks", {
-            title: "Save Berlin's Trees",
+        Promise.all([
+            db.countSignatures(),
+            db.getSignatureById(req.session.signatureId),
+        ]).then((entryData) => {
+            res.render("thanks", {
+                title: "Save Berlin's Trees",
+                data: {
+                    imagelink:
+                        "https://dictionary.cambridge.org/de/images/full/tree_noun_001_18152.jpg",
+                    imagedescription: "tree",
+                    campaigntext: "Save Berlin's Trees!",
+                    description: "Help prevent the dying of trees.",
+                },
+                text: "Thank you for signing.",
+                signers: entryData[0],
+                signatureImage: entryData[1],
+            });
         });
     }
 });

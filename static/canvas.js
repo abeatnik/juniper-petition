@@ -13,11 +13,11 @@
         ctx.lineWidth = 2;
         ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
         ctx.stroke();
-        // dataURL = canvas.toDataURL();
-        // signature.value = dataUrl;
     }
 
     canvas.addEventListener("mouseup", () => {
+        dataURL = canvas.toDataURL();
+        signature.value = dataURL;
         done = true;
     });
     canvas.addEventListener("mousedown", (e) => {
@@ -48,10 +48,10 @@
                             },
                             { once: true }
                         );
-                    }, 50);
+                    }, 8);
                 },
                 { once: true }
             );
-        }, 50);
+        }, 8);
     }
 })();
