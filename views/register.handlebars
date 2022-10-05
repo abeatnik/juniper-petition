@@ -1,16 +1,27 @@
 <body>
     {{>campaign data=data}}
+    <h2>Join us today to {{data.campaigntext}}</h2>
+    <p>In order to sign the petition you have to register.</p>
+            {{#messages}}
+        <p class="error-message">{{.}}</p>
+            {{/messages}}
     <form method="post">
         <label for="firstname">First Name</label>
-        <input type="text" name="firstname" id="firstname" value="" placeholder="Forrest"/>
+            {{#if userData.firstname}}
+        <input type="text" name="firstname" id="firstname" value="{{userData.firstname}}" placeholder="Forrest"/>
+                    {{/if}}
         <label for="lastname">Last Name</label>
-        <input type="text" name="lastname" id="lastname" value="" placeholder="Gump"/>
-        <div class="signature-field">
-            <canvas id="canvas" width="300px" height="150px"></canvas>
-            <label for="signature">Sign Here</label>
-            <input type="hidden" name="signature" id="signature" value=""/>
-        </div>  
+            {{#if userData.lastname}}
+        <input type="text" name="lastname" id="lastname" value="{{userData.lastname}}" placeholder="Gump"/>
+            {{/if}}
+        <label for="email">Email</label>
+            {{#if userData.email}}
+        <input type="email" name="email" id="email" value="{{userData.email}}" placeholder="forrest.gump@fruits.org">
+            {{/if}}
+        <label for="password">Choose a password</label>
+        <input type="password" name="password" id="password" value="">
+        <p>You password should contain at least one upper-case-letter, one number and have a minimum length of 6 characters</p>
         <button type="submit">Submit</button>
     </form>
-    <p>Already a user? Please <a href="/sign-in">Sign in</a></p>
+    <p>Already a user? Please <a href="/login">Sign in</a>.</p>
 </body>

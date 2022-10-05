@@ -1,10 +1,7 @@
 <body>
     {{>campaign data=data}}
+    <h2>Welcome {{name}}! You can now sign the petition!</h2>
     <form method="post">
-        <label for="firstname">First Name</label>
-        <input type="text" name="firstname" id="firstname" value="" placeholder="Forrest"/>
-        <label for="lastname">Last Name</label>
-        <input type="text" name="lastname" id="lastname" value="" placeholder="Gump"/>
         <div class="signature-field">
             <canvas id="canvas" width="300px" height="150px"></canvas>
             <label for="signature">Sign Here</label>

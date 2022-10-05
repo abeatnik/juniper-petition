@@ -32,14 +32,21 @@ module.exports.hashPassword = (password) => {
     return bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt));
 };
 
-module.exports.findUserByEmail = (email) => {
+module.exports.getUserPasswordByEmail = (email) => {
     const sql = `
     SELECT password FROM users WHERE users.email = $1;
     `;
     return db.query(sql, [email]);
 };
 
-module.exports.authenticate = (hash, password) => {
+module.exports.getUserNameById = (userId) => {
+    const sql = `
+    SELECT first_name FROM users WHERE users.id = $1;
+    `;
+    return db.query(sql, [userId]);
+};
+
+module.exports.authenticateUser = (hash, password) => {
     return bcrypt
         .compare(password, hash)
         .then((authenticated) => authenticated)
@@ -50,7 +57,11 @@ module.exports.countSignatures = () => {
     return db.query(`SELECT COUNT(*) FROM signatures`);
 };
 
-module.exports.findSignatureById = (userID) => {
+module.exports.getSignatureById = (userID) => {
     const sql = `SELECT signature FROM signatures WHERE signatures.user_id = $1`;
     return db.query(sql, [userID]);
+};
+
+module.exports.getAllSigners = () => {
+    return db.query(``);
 };
