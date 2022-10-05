@@ -7,17 +7,11 @@
             {{/messages}}
     <form method="post">
         <label for="firstname">First Name</label>
-            {{#if userData.firstname}}
         <input type="text" name="firstname" id="firstname" value="{{userData.firstname}}" placeholder="Forrest"/>
-                    {{/if}}
         <label for="lastname">Last Name</label>
-            {{#if userData.lastname}}
         <input type="text" name="lastname" id="lastname" value="{{userData.lastname}}" placeholder="Gump"/>
-            {{/if}}
         <label for="email">Email</label>
-            {{#if userData.email}}
         <input type="email" name="email" id="email" value="{{userData.email}}" placeholder="forrest.gump@fruits.org">
-            {{/if}}
         <label for="password">Choose a password</label>
         <input type="password" name="password" id="password" value="">
         <p>You password should contain at least one upper-case-letter, one number and have a minimum length of 6 characters</p>

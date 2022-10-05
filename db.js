@@ -11,7 +11,7 @@ module.exports.insertUser = (firstName, lastName, email, password) => {
     RETURNING *;
     `;
 
-    this.hashPassword(password)
+    return this.hashPassword(password)
         .then((hash) => {
             return db.query(sql, [firstName, lastName, email, hash]);
         })
@@ -29,12 +29,16 @@ module.exports.insertSignature = (signature, userId) => {
 };
 
 module.exports.hashPassword = (password) => {
+    console.log(
+        "password-hash-function: ",
+        bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt))
+    );
     return bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt));
 };
 
-module.exports.getUserPasswordByEmail = (email) => {
+module.exports.getUserPasswordAndIdByEmail = (email) => {
     const sql = `
-    SELECT password FROM users WHERE users.email = $1;
+    SELECT password, id FROM users WHERE users.email = $1;
     `;
     return db.query(sql, [email]);
 };
@@ -47,10 +51,7 @@ module.exports.getUserNameById = (userId) => {
 };
 
 module.exports.authenticateUser = (hash, password) => {
-    return bcrypt
-        .compare(password, hash)
-        .then((authenticated) => authenticated)
-        .catch((err) => console.log(err));
+    return bcrypt.compare(password, hash);
 };
 
 module.exports.countSignatures = () => {
@@ -58,10 +59,12 @@ module.exports.countSignatures = () => {
 };
 
 module.exports.getSignatureById = (userID) => {
-    const sql = `SELECT signature FROM signatures WHERE signatures.user_id = $1`;
+    const sql = `SELECT signature, id FROM signatures WHERE signatures.user_id = $1`;
     return db.query(sql, [userID]);
 };
 
 module.exports.getAllSigners = () => {
-    return db.query(``);
+    return db.query(
+        `SELECT last_name AS lastname, first_name AS firstname, signature FROM signatures JOIN users ON signatures.user_id=users.id ORDER BY signatures.created_at DESC;`
+    );
 };

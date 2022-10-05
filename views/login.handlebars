@@ -1,0 +1,18 @@
+<body>
+    {{>campaign data=data}}
+    <h2>Join us today to {{data.campaigntext}}</h2>
+    <p>Login to sign the petition and see who else signed.</p>
+            {{#messages}}
+        <p class="error-message">{{.}}</p>
+            {{/messages}}
+    <form method="post">
+        <label for="email">Email</label>
+            {{#if email}}
+        <input type="email" name="email" id="email" value="{{email}}" placeholder="forrest.gump@fruits.org">
+            {{/if}}
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" value="">
+        <button type="submit">Submit</button>
+    </form>
+    <p>Not yet a user? Please <a href="/registration">sign up</a>.</p>
+</body>
