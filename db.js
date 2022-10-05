@@ -1,59 +1,56 @@
 require("dotenv").config();
+const bcrypt = require("bcryptjs");
 const spicedPg = require("spiced-pg");
 const DATABASE_URL = process.env.DATABASE_URL;
 const db = spicedPg(DATABASE_URL);
 
 module.exports.insertUser = (firstName, lastName, email, password) => {
-
-    // email has to be unique 
-
-
     const sql = `
-    INSERT INTO users (first_name, last_name, email, hash) 
+    INSERT INTO users (first_name, last_name, email, password) 
     VALUES ($1, $2, $3, $4)
     RETURNING *;
     `;
 
-    //hash password here...
-
-    return db.query(sql, [firstName, lastName, email, hash]);
+    this.hashPassword(password)
+        .then((hash) => {
+            return db.query(sql, [firstName, lastName, email, hash]);
+        })
+        .catch((err) => console.log(err));
 };
 
-module.exports.insertSignature = (userId, signature) => {
+module.exports.insertSignature = (signature, userId) => {
     const sql = `
-    INSERT INTO signatures (userId, signature, date) 
-    VALUES ($1, $2, to_timestamp(${Date.now() / 1000.0}))
+    INSERT INTO signatures (signature, user_id) 
+    VALUES ($1, $2)
     RETURNING *;
     `;
 
-    return db.query(sql, [userId, signature]);
+    return db.query(sql, [signature, userId]);
 };
 
-module.exports.hashPassword = () => {
+module.exports.hashPassword = (password) => {
+    return bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt));
+};
 
-}
-
-module.exports.findUserByEmail = (email, password) => {
-    //find user by email - return hash
+module.exports.findUserByEmail = (email) => {
     const sql = `
-    INSERT INTO signatures (first_name, last_name, date) 
-    VALUES ($1, $2))
-    RETURNING *;
+    SELECT password FROM users WHERE users.email = $1;
     `;
-    return db.query(sql, [firstName, lastName]);
+    return db.query(sql, [email]);
 };
 
-module.exports.authenticate(hash, password, userId) => {
-    //if user: compare password with hash
-    // true => userId 
-}
-
+module.exports.authenticate = (hash, password) => {
+    return bcrypt
+        .compare(password, hash)
+        .then((authenticated) => authenticated)
+        .catch((err) => console.log(err));
+};
 
 module.exports.countSignatures = () => {
     return db.query(`SELECT COUNT(*) FROM signatures`);
 };
 
 module.exports.findSignatureById = (userID) => {
-    const sql = `SELECT signature FROM signatures WHERE signatures.id = $1`;
+    const sql = `SELECT signature FROM signatures WHERE signatures.user_id = $1`;
     return db.query(sql, [userID]);
 };
