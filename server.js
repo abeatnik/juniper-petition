@@ -21,15 +21,31 @@ const PORT = 8080;
 app.use(helmet());
 
 app.get("/", (req, res) => {
-    if (!!req.session.signatureId) {
+    if (!!req.session.userId) {
         res.redirect("/thanks");
     } else {
-        res.redirect("/sign");
+        res.redirect("/petition");
     }
 });
 
-app.get("/sign", (req, res) => {
+app.get("/register", (req, res) => {
+    // if error - rerender page with error message and user input
+});
+
+app.post("/register", (req, res) => {});
+
+app.get("/login", (req, res) => {
     if (!!req.session.signatureId) {
+        res.redirect("/thanks");
+    }
+
+    //show form
+});
+
+app.post("/login", (req, res) => {});
+
+app.get("/petition", (req, res) => {
+    if (!!req.session.userId) {
         res.redirect("/thanks");
     } else {
         res.render("form", {
@@ -47,36 +63,32 @@ app.get("/sign", (req, res) => {
     }
 });
 
-app.post("/sign", (req, res) => {
-    console.log("posted!");
-    console.log(`${req.body.firstname.trim()},
-            ${req.body.lastname.trim()},
-            ${req.body.signature}`);
+app.post("/petition", (req, res) => {
     if (req.body.firstname && req.body.lastname && req.body.signature) {
         db.createSignatureEntry(
             req.body.firstname.trim(),
             req.body.lastname.trim(),
             req.body.signature
         ).then((entry) => {
-            req.session.signatureId = entry.rows[0].id;
+            req.session.userId = entry.rows[0].id;
             res.redirect("/thanks");
         });
     } else if (req.body.firstname && req.body.lastname) {
         db.createUser(req.body.firstname.trim(), req.body.lastname.trim()).then(
             (entry) => {
-                req.session.signatureId = entry.rows[0].id;
+                req.session.userId = entry.rows[0].id;
             }
         );
     }
 });
 
 app.get("/thanks", (req, res) => {
-    if (!req.session.signatureId) {
-        res.redirect("/sign");
+    if (!req.session.userId) {
+        res.redirect("/petition");
     } else {
         Promise.all([
             db.countSignatures(),
-            db.getSignatureById(req.session.signatureId),
+            db.findSignatureById(req.session.userId),
         ]).then((entryData) => {
             res.render("thanks", {
                 title: "Save Berlin's Trees",
@@ -88,14 +100,16 @@ app.get("/thanks", (req, res) => {
                     description: "Help prevent the dying of trees.",
                 },
                 text: "Thank you for signing.",
-                signers: entryData[0],
-                signatureImage: entryData[1],
+                signers: entryData[0].rows[0].count,
+                signatureImage: entryData[1].rows[0].signature,
             });
         });
     }
 });
 
 app.get("/signatures", (req, res) => {});
+
+app.get("/logout", (req, res) => {});
 
 app.get("/favicon.ico", (req, res) => res.end());
 

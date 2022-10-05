@@ -1,0 +1,16 @@
+<body>
+    {{>campaign data=data}}
+    <form method="post">
+        <label for="firstname">First Name</label>
+        <input type="text" name="firstname" id="firstname" value="" placeholder="Forrest"/>
+        <label for="lastname">Last Name</label>
+        <input type="text" name="lastname" id="lastname" value="" placeholder="Gump"/>
+        <div class="signature-field">
+            <canvas id="canvas" width="300px" height="150px"></canvas>
+            <label for="signature">Sign Here</label>
+            <input type="hidden" name="signature" id="signature" value=""/>
+        </div>  
+        <button type="submit">Submit</button>
+    </form>
+    <p>Already a user? Please <a href="/sign-in">Sign in</a></p>
+</body>
