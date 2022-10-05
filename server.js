@@ -7,11 +7,9 @@ const { engine } = require("express-handlebars");
 const cookieSession = require("cookie-session");
 
 const campaigndata = {
-    imagelink:
-        "https://dictionary.cambridge.org/de/images/full/tree_noun_001_18152.jpg",
-    imagedescription: "tree",
-    campaigntext: "Save Berlin's Trees!",
-    description: "Help prevent the dying of trees.",
+    campaigntext: "Save Berlin's Trees",
+    description:
+        "Urban trees are dying. They are a key element of urban spaces and crucial for making Berlin a livable city. Their future will be critical for Berlin and the city's inhabitants. With your help Berlin's trees could receive the care that they need.",
 };
 
 app.engine("handlebars", engine());
