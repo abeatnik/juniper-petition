@@ -18,6 +18,14 @@ module.exports.insertUser = (firstName, lastName, email, password) => {
         .catch((err) => console.log(err));
 };
 
+module.exports.hashPassword = (password) => {
+    console.log(
+        "password-hash-function: ",
+        bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt))
+    );
+    return bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt));
+};
+
 module.exports.insertSignature = (signature, userId) => {
     const sql = `
     INSERT INTO signatures (signature, user_id) 
@@ -28,17 +36,19 @@ module.exports.insertSignature = (signature, userId) => {
     return db.query(sql, [signature, userId]);
 };
 
-module.exports.hashPassword = (password) => {
-    console.log(
-        "password-hash-function: ",
-        bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt))
-    );
-    return bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt));
+module.exports.insertProfile = (userId, age, city, homepage) => {
+    const sql = `
+    INSERT INTO user_profiles (user_id, age, city, url) 
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;
+    `;
+
+    return db.query(sql, [userId, age, city, homepage]);
 };
 
-module.exports.getUserPasswordAndIdByEmail = (email) => {
+module.exports.getUserByEmail = (email) => {
     const sql = `
-    SELECT password, id FROM users WHERE users.email = $1;
+    SELECT password, user_id, signatures.id FROM users LEFT JOIN signatures ON users.id=signatures.user_id WHERE users.email = $1;
     `;
     return db.query(sql, [email]);
 };
@@ -65,6 +75,11 @@ module.exports.getSignatureById = (userID) => {
 
 module.exports.getAllSigners = () => {
     return db.query(
-        `SELECT last_name AS lastname, first_name AS firstname, signature FROM signatures JOIN users ON signatures.user_id=users.id ORDER BY signatures.created_at DESC;`
+        `SELECT last_name AS lastname, first_name AS firstname, signature, age, city, url FROM signatures JOIN users ON signatures.user_id=users.id LEFT JOIN user_profiles ON users.id=user_profiles.user_id ORDER BY signatures.created_at DESC;`
     );
+};
+
+module.exports.getAllSignersByCity = (city) => {
+    const sql = `SELECT last_name AS lastname, first_name AS firstname, signature, age, city, url FROM signatures JOIN users ON signatures.user_id=users.id JOIN user_profile ON users.id=user_profiles.user_id WHERE user_profiles.city = $1 ORDER BY signatures.created_at DESC;`;
+    return db.query(sql, [city]);
 };

@@ -4,7 +4,17 @@
         <h2>You are among {{count}} people that have signed this petition to {{campaign}}.</h2>
         {{#signers}}
         <div class="entry">
+            {{#if url}}
+            <p class="name"><a href="{{url}}">{{firstname}} {{lastname}}</a></p>
+            {{else}}
             <p class="name">{{firstname}} {{lastname}}</p>
+            {{/if}}
+            {{#if age}}
+            <p class="age">, {{age}}</p>
+            {{/if}}
+            {{#if city}}
+            <p class="city"><a href="/signatures/{{city}}">, {{city}}</a></p>
+            {{/if}}
             <div class="signature-img">
                 <img src="{{signature}}" alt="signature" >
             </div>

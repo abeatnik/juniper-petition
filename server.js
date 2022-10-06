@@ -87,7 +87,7 @@ app.post("/register", (req, res) => {
         )
             .then((entry) => {
                 req.session.userId = entry.rows[0].id;
-                res.redirect("/petition");
+                res.redirect("/profile");
             })
             .catch((err) => console.log(err));
     }
@@ -126,29 +126,45 @@ app.post("/login", (req, res) => {
     if (!req.body.email || !req.body.password) {
         res.render("login", {
             title: "Login",
-            script: "/static/empty.js",
             data: campaigndata,
             messages: messageArr,
             email: email,
         });
     } else {
-        db.getUserPasswordAndIdByEmail(req.body.email).then((entry) => {
-            db.authenticateUser(entry.row[0].password, req.body.password).then(
+        db.getUserByEmail(req.body.email).then((entry) => {
+            db.authenticateUser(entry.rows[0].password, req.body.password).then(
                 (authenticated) => {
                     if (authenticated) {
-                        req.session.userId = entry.row[0].id;
-                        db.getSignatureById(entry.row[0].id).then((signed) => {
-                            if (signed.rows[0].id) {
-                                req.session.signatureId = signed.rows[0].id;
-                                res.redirect("/thanks");
-                            }
-                            res.redirect("/petition");
-                        });
+                        req.session.userId = entry.rows[0].user_id;
+                        if (entry.rows[0].id) {
+                            req.session.signatureId = entry.rows[0].id;
+                            res.redirect("/thanks");
+                        } else {
+                            res.redirect("/profile");
+                        }
                     }
                 }
             );
         });
     }
+});
+
+app.get("/profile", (req, res) => {
+    res.render("profile", {
+        title: "Profile",
+        data: campaigndata,
+    });
+});
+
+app.post("/profile", (req, res) => {
+    const regex = /^https/;
+    let userUrl = req.body.url.match(regex) ? req.body.url : "";
+    let userAge = req.body.age !== "" ? req.body.age : null;
+    db.insertProfile(req.session.userId, userAge, req.body.city, userUrl)
+        .then((entry) => {
+            res.redirect("/petition");
+        })
+        .catch((err) => console.log(err));
 });
 
 app.get("/petition", (req, res) => {
@@ -211,6 +227,10 @@ app.get("/signatures", (req, res) => {
             });
         }
     );
+});
+
+app.get("/signatures/:city", (req, res) => {
+    db.getAllSignersByCity(req.params.city).then((enties) => {});
 });
 
 app.get("/logout", (req, res) => {
