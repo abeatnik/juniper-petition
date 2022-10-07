@@ -46,27 +46,28 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+    const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/gm;
     const messageArr = [];
     const userData = {};
     const errorMessage = {
-        firstname: "Entering your First Name is obligatory.",
-        lastname: "Entering your Last Name is obligatory.",
+        firstname: "Entering your First Name is obligatory",
+        lastname: "Entering your Last Name is obligatory",
         email: "E-Mail is required",
-        password: "Please choose a valid password.",
+        password: "Please choose a valid password",
     };
 
     const bodyObj = {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         email: req.body.email,
-        password: !!req.body.password,
+        password: req.body.password.match(pwRegex),
     };
 
     Object.keys(bodyObj).forEach((key) => {
         if (!bodyObj[key]) {
             messageArr.push(errorMessage[key]);
         } else if (key !== "password") {
-            userData.key = bodyObj[key];
+            userData[key] = bodyObj[key];
         }
     });
 
@@ -97,7 +98,6 @@ app.get("/login", (req, res) => {
     !!req.session.signatureId && res.redirect("/thanks");
     res.render("login", {
         title: "Login",
-        script: "/static/empty.js",
         data: campaigndata,
     });
 });
@@ -107,7 +107,7 @@ app.post("/login", (req, res) => {
     let email;
     const errorMessage = {
         email: "E-Mail is required",
-        password: "Please choose a valid password.",
+        password: "Incorrect password",
     };
 
     const bodyObj = {
@@ -131,21 +131,31 @@ app.post("/login", (req, res) => {
             email: email,
         });
     } else {
-        db.getUserByEmail(req.body.email).then((entry) => {
-            db.authenticateUser(entry.rows[0].password, req.body.password).then(
-                (authenticated) => {
+        db.getUserByEmail(req.body.email)
+            .then((entry) => {
+                db.authenticateUser(
+                    entry.rows[0].password,
+                    req.body.password
+                ).then((authenticated) => {
                     if (authenticated) {
                         req.session.userId = entry.rows[0].user_id;
                         if (entry.rows[0].id) {
                             req.session.signatureId = entry.rows[0].id;
                             res.redirect("/thanks");
                         } else {
-                            res.redirect("/profile");
+                            res.redirect("/petition");
                         }
                     }
-                }
-            );
-        });
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                res.render("login", {
+                    title: "Login",
+                    data: campaigndata,
+                    messages: ["Wrong E-mail or password"],
+                });
+            });
     }
 });
 
@@ -204,7 +214,6 @@ app.get("/thanks", (req, res) => {
         res.render("thanks", {
             title: "Save Berlin's Trees",
             data: campaigndata,
-            text: "Thank you for signing.",
             signers: entryData[0].rows[0].count,
             signatureImage: entryData[1].rows[0].signature,
         });
@@ -230,7 +239,124 @@ app.get("/signatures", (req, res) => {
 });
 
 app.get("/signatures/:city", (req, res) => {
-    db.getAllSignersByCity(req.params.city).then((enties) => {});
+    !req.session.signatureId && res.redirect("/petition");
+    Promise.all([
+        db.countSignaturesInCity(req.params.city),
+        db.getAllSignersByCity(req.params.city),
+    ]).then((entryData) => {
+        const count = entryData[0].rows[0].count;
+        const signers = entryData[1].rows;
+        res.render("signers", {
+            title: "All signers of the petition",
+            data: campaigndata,
+            signers: signers,
+            count: count,
+            campaign: campaigndata.campaigntext,
+            location: req.params.city,
+        });
+    });
+});
+
+app.get("/edit", (req, res) => {
+    !req.session.userId && res.redirect("/login");
+    db.getUserInfo(req.session.userId).then((entry) => {
+        entry = entry.rows[0];
+        res.render("edit", {
+            title: "Edit your profile",
+            data: campaigndata,
+            entry: entry,
+        });
+    });
+});
+
+app.post("/edit", (req, res) => {
+    const pwRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/gm;
+    const messageArr = [];
+    const userData = {};
+
+    const errorMessage = {
+        firstname: "Entering your First Name is obligatory",
+        lastname: "Entering your Last Name is obligatory",
+        email: "E-Mail is required",
+        url: "Please enter a valid url",
+        password: "Please choose a valid password",
+    };
+
+    const bodyObj = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+    };
+
+    db.getUserByEmail(req.body.email)
+        .then((entry) => {
+            if (entry.rows[0]["user_id"] === req.session.userId) {
+                bodyObj.email = req.body.email;
+            } else {
+                messageArr.push(
+                    "E-Mail address cannot be assigned to this user"
+                );
+            }
+        })
+        .catch((noEntry) => {
+            bodyObj.email = req.body.email;
+        });
+
+    if (req.body.password) {
+        if (!req.body.password.match(pwRegex)) {
+            messageArr.push(errorMessage.password);
+        } else {
+            bodyObj.password = !!req.body.password;
+        }
+    }
+
+    if (req.body.age) {
+        bodyObj.age = req.body.age;
+    }
+
+    if (req.body.city) {
+        bodyObj.city = req.body.city;
+    }
+
+    if (req.body.url) {
+        if (req.body.url.match(/^https/)) {
+            bodyObj.city = req.body.url;
+        }
+    }
+
+    Object.keys(bodyObj).forEach((key) => {
+        if (!bodyObj[key]) {
+            messageArr.push(errorMessage[key]);
+        } else if (key !== "password") {
+            userData[key] = bodyObj[key];
+        }
+    });
+
+    if (messageArr.length !== 0) {
+        res.render("edit", {
+            title: "Edit your profile",
+            data: campaigndata,
+            messages: messageArr,
+            entry: userData,
+        });
+    } else {
+        Promise.all([
+            db.updateUserData(
+                req.session.userId,
+                bodyObj.firstname,
+                bodyObj.lastname,
+                bodyObj.email,
+                req.body.password
+            ),
+            db.updateUserProfile(
+                req.session.userId,
+                bodyObj.age,
+                bodyObj.city,
+                bodyObj.url
+            ),
+        ]).then((updated) => {
+            res.redirect("/petition");
+        });
+    }
 });
 
 app.get("/logout", (req, res) => {

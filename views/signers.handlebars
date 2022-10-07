@@ -1,7 +1,11 @@
 <body>
     {{>campaign data=data}}
     <div class="all-signatures">
-        <h2>You are among {{count}} people that have signed this petition to {{campaign}}.</h2>
+        {{#if location}}
+        <h2>You are among {{count}} people in {{location}} that have signed this petition.</h2>
+        {{else}}
+        <h2>You are among {{count}} people that have signed this petition.</h2>
+        {{/if}}
         {{#signers}}
         <div class="entry">
             {{#if url}}

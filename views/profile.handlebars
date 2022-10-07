@@ -1,14 +1,16 @@
 <body>
     {{>campaign data=data}}
-    <h2>Tell us more about yourself</h2>
-    <p>Of course, this is optional...</p>
-    <form method="post">
-        <label for="age">Age</label>
-        <input type="number" name="age" id="age" value=""/>
-        <label for="city">City</label>
-        <input type="text" name="city" id="city" value=""/>
-        <label for="url">Website</label>
-        <input type="url" name="url" id="url" value=""/>
-        <button type="submit">Continue</button>
-    </form>
+    <div class="form-container">
+        <h2>Tell us more about yourself</h2>
+        <p>Of course, this is optional...</p>
+        <form method="post">
+            <label for="age">Age</label>
+            <input type="number" name="age" id="age" value=""/>
+            <label for="city">City</label>
+            <input type="text" name="city" id="city" value=""/>
+            <label for="url">Website</label>
+            <input type="url" name="url" id="url" value=""/>
+            <button type="submit">Continue</button>
+        </form>
+    </div>
 </body>

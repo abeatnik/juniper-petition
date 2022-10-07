@@ -1,7 +1,11 @@
 <body>
     {{>campaign data=data}}
-    <div class="container">
-        <h2>{{text}}</h2>
+    <div class="form-container">
+        <h2>Thank you for signing!</h2>
+        <p>Your voice makes a difference!</p>
+        <a class="redirect" href="/edit">Edit your Profile</a>
+        <button type="submit" class="link">Delete your signature</button>
+        <a class="redirect" href="/logout">Logout</a>
         <div class="signature-img">
             <img src="{{signatureImage}}" alt="your signature" >
         </div>

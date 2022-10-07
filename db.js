@@ -19,10 +19,6 @@ module.exports.insertUser = (firstName, lastName, email, password) => {
 };
 
 module.exports.hashPassword = (password) => {
-    console.log(
-        "password-hash-function: ",
-        bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt))
-    );
     return bcrypt.genSalt().then((salt) => bcrypt.hash(password, salt));
 };
 
@@ -36,14 +32,14 @@ module.exports.insertSignature = (signature, userId) => {
     return db.query(sql, [signature, userId]);
 };
 
-module.exports.insertProfile = (userId, age, city, homepage) => {
+module.exports.insertProfile = (userId, age, city, url) => {
     const sql = `
     INSERT INTO user_profiles (user_id, age, city, url) 
     VALUES ($1, $2, $3, $4)
     RETURNING *;
     `;
 
-    return db.query(sql, [userId, age, city, homepage]);
+    return db.query(sql, [userId, age, city, url]);
 };
 
 module.exports.getUserByEmail = (email) => {
@@ -68,6 +64,11 @@ module.exports.countSignatures = () => {
     return db.query(`SELECT COUNT(*) FROM signatures`);
 };
 
+module.exports.countSignaturesInCity = (city) => {
+    const sql = `SELECT COUNT(*) FROM signatures JOIN user_profiles ON signatures.user_id=user_profiles.user_id WHERE city= $1`;
+    return db.query(sql, [city]);
+};
+
 module.exports.getSignatureById = (userID) => {
     const sql = `SELECT signature, id FROM signatures WHERE signatures.user_id = $1`;
     return db.query(sql, [userID]);
@@ -80,6 +81,36 @@ module.exports.getAllSigners = () => {
 };
 
 module.exports.getAllSignersByCity = (city) => {
-    const sql = `SELECT last_name AS lastname, first_name AS firstname, signature, age, city, url FROM signatures JOIN users ON signatures.user_id=users.id JOIN user_profile ON users.id=user_profiles.user_id WHERE user_profiles.city = $1 ORDER BY signatures.created_at DESC;`;
+    const sql = `SELECT last_name AS lastname, first_name AS firstname, signature, age, url FROM signatures JOIN users ON signatures.user_id=users.id JOIN user_profiles ON users.id=user_profiles.user_id WHERE user_profiles.city = $1 ORDER BY signatures.created_at DESC;`;
     return db.query(sql, [city]);
+};
+
+module.exports.getUserInfo = (userId) => {
+    const sql = `SELECT last_name AS lastname, first_name AS firstname, email, age, city, url FROM users JOIN user_profiles ON users.id=user_profiles.user_id WHERE users.id=$1;`;
+    return db.query(sql, [userId]);
+};
+
+module.exports.updateUserData = (
+    userId,
+    firstname,
+    lastname,
+    email,
+    password
+) => {
+    if (!password) {
+        const sql = `UPDATE users SET first_name=$1, last_name=$2, email=$3 WHERE id=$4;`;
+        return db.query(sql, [firstname, lastname, email, userId]);
+    } else {
+        const sql = `UPDATE users SET first_name=$1, last_name=$2, email=$3, password=$4 WHERE id=$5;`;
+        return db.query(sql, [firstname, lastname, email, password, userId]);
+    }
+};
+
+module.exports.updateUserProfile = (userId, age, city, url) => {
+    const sql = `
+        INSERT INTO user_profiles (age, city, url, user_id)
+        VALUES($1, $2, $3, $4)
+        ON CONFLICT (user_id)
+        DO UPDATE SET age=$1, city=$2, url=$3, user_id=$4;`;
+    return db.query(sql, [age, city, url, userId]);
 };

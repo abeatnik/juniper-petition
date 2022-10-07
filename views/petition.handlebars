@@ -1,12 +1,16 @@
 <body>
     {{>campaign data=data}}
-    <h2>Welcome {{name}}! You can now sign the petition!</h2>
-    <form method="post">
-        <div class="signature-field">
-            <canvas id="canvas" width="300px" height="150px"></canvas>
-            <label for="signature">Sign Here</label>
-            <input type="hidden" name="signature" id="signature" value=""/>
-        </div>  
-        <button type="submit">Submit</button>
-    </form>
+    <div class="form-container">
+        <h2>Welcome {{name}}! You can now sign the petition!</h2>
+        <form method="post">
+            <div class="signature-field">
+                <canvas id="canvas" width="300px" height="150px"></canvas>
+                <label for="signature">Sign Here</label>
+                <input type="hidden" name="signature" id="signature" value=""/>
+            </div>  
+            <button type="submit">Submit</button>
+            <a class="redirect" href="/edit">Edit your Profile</a>
+            <a class="redirect" href="/logout">Logout</a>
+        </form>
+    </div>
 </body>

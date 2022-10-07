@@ -1,21 +1,25 @@
 <body>
     {{>campaign data=data}}
-    <h2>Join us today to {{data.campaigntext}}</h2>
-    <p>In order to sign the petition you have to register.</p>
-            {{#messages}}
-        <p class="error-message">{{.}}</p>
-            {{/messages}}
-    <form method="post">
-        <label for="firstname">First Name</label>
-        <input type="text" name="firstname" id="firstname" value="{{userData.firstname}}" placeholder="Forrest"/>
-        <label for="lastname">Last Name</label>
-        <input type="text" name="lastname" id="lastname" value="{{userData.lastname}}" placeholder="Gump"/>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="{{userData.email}}" placeholder="forrest.gump@fruits.org">
-        <label for="password">Choose a password</label>
-        <input type="password" name="password" id="password" value="">
-        <p>You password should contain at least one upper-case-letter, one number and have a minimum length of 6 characters</p>
-        <button type="submit">Submit</button>
-    </form>
-    <p>Already a user? Please <a href="/login">Sign in</a>.</p>
+    <div class="form-container">
+        <h2 class="headline">Join us today to {{data.campaigntext}}!</h2>
+        <p class="info">In order to sign the petition you have to register.</p>
+                {{#messages}}
+            <p class="error-message">{{.}}</p>
+                {{/messages}}
+        <form method="post">
+            <label for="firstname">First Name</label>
+            <input type="text" name="firstname" id="firstname" value="{{userData.firstname}}" placeholder="Forrest"/>
+            <label for="lastname">Last Name</label>
+            <input type="text" name="lastname" id="lastname" value="{{userData.lastname}}" placeholder="Gump"/>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" value="{{userData.email}}" placeholder="forrest.gump@fruits.org">
+            <label for="password">Choose a password</label>
+            <input type="password" name="password" id="password" value="">
+            <p>You password should contain at least one lower- and upper-case-letter, one number and have a minimum length of 6 characters</p>
+            <button type="submit">Submit</button>
+        </form>
+        <p>Already a user? Please <a href="/login">sign in</a>.</p>
+    </div>
 </body>
+
+

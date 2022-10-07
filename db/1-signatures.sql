@@ -1,4 +1,4 @@
-DROP TABLE CASCADE IF EXISTS signatures;
+DROP TABLE IF EXISTS signatures;
 
 
 CREATE TABLE signatures (

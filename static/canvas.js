@@ -20,6 +20,7 @@
         signature.value = dataURL;
         done = true;
     });
+
     canvas.addEventListener("mousedown", (e) => {
         done = false;
         cp1x = e.offsetX;

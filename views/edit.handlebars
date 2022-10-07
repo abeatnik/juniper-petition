@@ -1,0 +1,30 @@
+<body>
+    {{>campaign data=data}}
+    <div class="form-container">
+        <h2 class="headline">Edit your profile</h2>
+        <p class="info">Update or delete your information here.</p>
+                {{#messages}}
+            <p class="error-message">{{.}}</p>
+                {{/messages}}
+        <form method="post">
+            {{#entry}}
+            <label for="firstname">First Name</label>
+            <input type="text" name="firstname" id="firstname" value="{{firstname}}" placeholder="Forrest"/>
+            <label for="lastname">Last Name</label>
+            <input type="text" name="lastname" id="lastname" value="{{lastname}}" placeholder="Gump"/>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" value="{{email}}" placeholder="forrest.gump@fruits.org">
+            <label for="password">New password</label>
+            <input type="password" name="password" id="password" value="">
+            <label for="age">Age</label>
+            <input type="number" name="age" id="age" value="{{age}}"/>
+            <label for="city">City</label>
+            <input type="text" name="city" id="city" value="{{city}}"/>
+            <label for="url">Website</label>
+            <input type="url" name="url" id="url" value="{{url}}"/>
+            <button type="submit">Save changes</button>
+            <button type="button" onclick="location.href='./thanks'">Discard changes</button>
+            {{/entry}}
+        </form>
+    </div>
+</body>
