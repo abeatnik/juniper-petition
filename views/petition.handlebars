@@ -5,12 +5,15 @@
         <form method="post">
             <div class="signature-field">
                 <canvas id="canvas" width="300px" height="150px"></canvas>
-                <label for="signature">Sign Here</label>
+                <label for="signature" id="sign-here"> Sign Here</label>
                 <input type="hidden" name="signature" id="signature" value=""/>
-            </div>  
+            </div> 
             <button type="submit">Submit</button>
-            <a class="redirect" href="/edit">Edit your Profile</a>
-            <a class="redirect" href="/logout">Logout</a>
+
+            <div class="edit-buttons">
+                <a class="redirect pen" href="/edit">Edit your Profile</a>
+                <a class="redirect quit" href="/logout">Logout</a>
+            </div> 
         </form>
     </div>
 </body>

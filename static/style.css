@@ -18,7 +18,7 @@
 body {
     display: grid;
     min-height: 100vh;
-    grid-template-rows: 1fr 40px;
+    /* grid-template-rows: 1fr 40px; */
 }
 
 main {
@@ -73,6 +73,7 @@ footer {
 
 .form-container {
     padding: 40px;
+    margin-left: 100px;
 }
 
 .form-container form {
@@ -88,11 +89,32 @@ footer {
     margin: 16px 0;
 }
 
-.form-container button {
+.form-container button[type="submit"] {
     background-color: #9ad5f1;
     color: #6e716b;
+    border: 2px solid transparent;
+    height: 25px;
+    line-height: 12px;
     padding: 4px;
-    border: none;
+    max-width: 120px;
+    margin-top: 26px;
+}
+
+.form-container #discard {
+    background-color: #9ad5f1;
+    font-size: 0.8em;
+    color: #6e716b;
+    padding: 4px;
+    max-width: 120px;
+    height: 25px;
+    text-decoration: none;
+    margin-top: 10px;
+    line-height: 16px;
+    text-align: center;
+}
+
+.form-container #discard:hover {
+    cursor: default;
 }
 
 .form-container input {
@@ -100,7 +122,88 @@ footer {
     color: black;
     padding: 4px;
     border: none;
+    max-width: 300px;
+    margin-bottom: 20px;
 }
 
-.all-signatures {
+.form-container .edit-buttons {
+    display: flex;
+    margin-top: 20px;
+}
+
+.form-container .edit-buttons button:hover {
+    cursor: pointer;
+    background-color: #9ad5f1;
+    color: #6e716b;
+    border: 2px solid transparent;
+}
+
+.form-container .edit-buttons button {
+    background-color: #5f7c67;
+    color: #9ad5f1;
+    border: 2px solid #9ad5f1;
+    margin: 0 8px 0 0;
+    padding: 4px;
+    max-width: 140px;
+    height: 25px;
+    line-height: 10px;
+}
+
+.form-container .redirect {
+    background-color: #5f7c67;
+    color: #9ad5f1;
+    border: 2px solid #9ad5f1;
+    font-size: 0.8em;
+    padding: 4px;
+    margin: 0 8px 0 0;
+    max-width: 140px;
+    height: 25px;
+    text-decoration: none;
+    line-height: 12px;
+    text-align: center;
+}
+
+.form-container .redirect:hover {
+    cursor: pointer;
+    background-color: #9ad5f1;
+    color: #6e716b;
+    border: 2px solid transparent;
+}
+
+.form-container .pen:before {
+    content: "🖋 ";
+}
+
+.form-container .quit:before {
+    content: "✖️ ";
+}
+
+.form-container .delete:before {
+    content: "💔 ";
+}
+.form-container #sign-here {
+    margin-left: 4px;
+    margin-top: -2px;
+    font-size: 0.8em;
+}
+
+.form-container #sign-here:before {
+    content: "← ";
+}
+.form-container #sign-here:after {
+    content: "  🖋";
+}
+
+.error-message {
+    color: red;
+}
+
+.error-message:before {
+    content: "⚠ ";
+}
+
+#pw-info {
+    margin-top: -14px;
+    font-size: 0.8em;
+    max-width: 400px;
 }

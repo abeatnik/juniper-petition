@@ -1,6 +1,9 @@
 (() => {
     const canvas = document.getElementById("canvas");
     const signature = document.getElementById("signature");
+    const signatureField =
+        document.getElementsByClassName("signature-field")[0];
+    let refreshButton;
     var ctx = canvas.getContext("2d");
     let done = false;
     let cp1x = 0;
@@ -55,4 +58,16 @@
             );
         }, 8);
     }
+
+    // canvas.addEventListener(
+    //     "mousedown",
+    //     (e) => {
+    //         signatureField.innerHTML += '<button id="refresh">Refresh</button>';
+    //         refreshButton = document.getElementById("refresh");
+    //         refreshButton.addEventListener("click", (e) => {
+    //             signature.value = "";
+    //         });
+    //     },
+    //     { once: true }
+    // );
 })();

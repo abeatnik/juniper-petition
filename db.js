@@ -44,7 +44,7 @@ module.exports.insertProfile = (userId, age, city, url) => {
 
 module.exports.getUserByEmail = (email) => {
     const sql = `
-    SELECT password, user_id, signatures.id FROM users LEFT JOIN signatures ON users.id=signatures.user_id WHERE users.email = $1;
+    SELECT password, users.id AS user_id, signatures.id AS signature_id FROM users LEFT JOIN signatures ON users.id=signatures.user_id WHERE users.email = $1;
     `;
     return db.query(sql, [email]);
 };
@@ -113,4 +113,18 @@ module.exports.updateUserProfile = (userId, age, city, url) => {
         ON CONFLICT (user_id)
         DO UPDATE SET age=$1, city=$2, url=$3, user_id=$4;`;
     return db.query(sql, [age, city, url, userId]);
+};
+
+module.exports.deleteSignature = (signatureId) => {
+    const sql = `DELETE FROM signatures WHERE id=$1;`;
+    return db.query(sql, [signatureId]);
+};
+
+module.exports.deleteAllUserData = (userId) => {
+    const sql = `
+    DELETE FROM users WHERE id=$1;
+    DELETE FROM signatures WHERE user_id=$1;
+    DELETE FROM user_profiles WHERE user_id=$1;
+    `;
+    return db.query(sql, [userId]);
 };

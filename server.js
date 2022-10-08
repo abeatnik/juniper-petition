@@ -85,12 +85,10 @@ app.post("/register", (req, res) => {
             req.body.lastname.trim(),
             req.body.email.trim(),
             req.body.password
-        )
-            .then((entry) => {
-                req.session.userId = entry.rows[0].id;
-                res.redirect("/profile");
-            })
-            .catch((err) => console.log(err));
+        ).then((entry) => {
+            req.session.userId = entry.rows[0].id;
+            res.redirect("/profile");
+        });
     }
 });
 
@@ -138,9 +136,10 @@ app.post("/login", (req, res) => {
                     req.body.password
                 ).then((authenticated) => {
                     if (authenticated) {
-                        req.session.userId = entry.rows[0].user_id;
-                        if (entry.rows[0].id) {
-                            req.session.signatureId = entry.rows[0].id;
+                        req.session.userId = entry.rows[0]["user_id"];
+                        if (entry.rows[0]["signature_id"]) {
+                            req.session.signatureId =
+                                entry.rows[0]["signature_id"];
                             res.redirect("/thanks");
                         } else {
                             res.redirect("/petition");
@@ -149,7 +148,6 @@ app.post("/login", (req, res) => {
                 });
             })
             .catch((err) => {
-                console.log(err);
                 res.render("login", {
                     title: "Login",
                     data: campaigndata,
@@ -217,6 +215,13 @@ app.get("/thanks", (req, res) => {
             signers: entryData[0].rows[0].count,
             signatureImage: entryData[1].rows[0].signature,
         });
+    });
+});
+
+app.post("/thanks", (req, res) => {
+    db.deleteSignature(req.session.signatureId).then((deleted) => {
+        req.session.signatureId = null;
+        res.redirect("/petition");
     });
 });
 
@@ -299,64 +304,65 @@ app.post("/edit", (req, res) => {
         })
         .catch((noEntry) => {
             bodyObj.email = req.body.email;
+        })
+        .finally((emailUpdated) => {
+            if (req.body.password) {
+                if (!req.body.password.match(pwRegex)) {
+                    messageArr.push(errorMessage.password);
+                } else {
+                    bodyObj.password = !!req.body.password;
+                }
+            }
+
+            if (req.body.age) {
+                bodyObj.age = req.body.age;
+            }
+
+            if (req.body.city) {
+                bodyObj.city = req.body.city;
+            }
+
+            if (req.body.url) {
+                if (req.body.url.match(/^https/)) {
+                    bodyObj.url = req.body.url;
+                }
+            }
+
+            Object.keys(bodyObj).forEach((key) => {
+                if (!bodyObj[key]) {
+                    messageArr.push(errorMessage[key]);
+                } else if (key !== "password") {
+                    userData[key] = bodyObj[key];
+                }
+            });
+
+            if (messageArr.length !== 0) {
+                res.render("edit", {
+                    title: "Edit your profile",
+                    data: campaigndata,
+                    messages: messageArr,
+                    entry: userData,
+                });
+            } else {
+                Promise.all([
+                    db.updateUserData(
+                        req.session.userId,
+                        bodyObj.firstname,
+                        bodyObj.lastname,
+                        bodyObj.email,
+                        req.body.password
+                    ),
+                    db.updateUserProfile(
+                        req.session.userId,
+                        bodyObj.age,
+                        bodyObj.city,
+                        bodyObj.url
+                    ),
+                ]).then((updated) => {
+                    res.redirect("/petition");
+                });
+            }
         });
-
-    if (req.body.password) {
-        if (!req.body.password.match(pwRegex)) {
-            messageArr.push(errorMessage.password);
-        } else {
-            bodyObj.password = !!req.body.password;
-        }
-    }
-
-    if (req.body.age) {
-        bodyObj.age = req.body.age;
-    }
-
-    if (req.body.city) {
-        bodyObj.city = req.body.city;
-    }
-
-    if (req.body.url) {
-        if (req.body.url.match(/^https/)) {
-            bodyObj.city = req.body.url;
-        }
-    }
-
-    Object.keys(bodyObj).forEach((key) => {
-        if (!bodyObj[key]) {
-            messageArr.push(errorMessage[key]);
-        } else if (key !== "password") {
-            userData[key] = bodyObj[key];
-        }
-    });
-
-    if (messageArr.length !== 0) {
-        res.render("edit", {
-            title: "Edit your profile",
-            data: campaigndata,
-            messages: messageArr,
-            entry: userData,
-        });
-    } else {
-        Promise.all([
-            db.updateUserData(
-                req.session.userId,
-                bodyObj.firstname,
-                bodyObj.lastname,
-                bodyObj.email,
-                req.body.password
-            ),
-            db.updateUserProfile(
-                req.session.userId,
-                bodyObj.age,
-                bodyObj.city,
-                bodyObj.url
-            ),
-        ]).then((updated) => {
-            res.redirect("/petition");
-        });
-    }
 });
 
 app.get("/logout", (req, res) => {
