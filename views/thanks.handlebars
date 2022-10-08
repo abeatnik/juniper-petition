@@ -1,19 +1,20 @@
 <body>
     {{>campaign data=data}}
     <div class="form-container">
-        <h2>Thank you for signing!</h2>
+        <h2>Thank you for signing, {{name}}!</h2>
         <p>Your voice makes a difference!</p>
         <div class="signature-img">
             <img src="{{signatureImage}}" alt="your signature" >
         </div>
-        <div class="edit-buttons">
+        <p>See all <a href="./signatures">{{signers}} people</a> that signed this petition.</p>
+         <div class="edit-buttons">
             <a class="redirect pen" href="/edit">Edit Profile</a>
             <a class="redirect quit" href="/logout">Logout</a>
             <form method="post">
                 <button type="submit" class="delete-signature delete">Delete Signature</button>
             </form>
+            <a href="/delete-profile" id="delete-all">Delete Profile</a>
         </div>
-        <p>See all <a href="./signatures">{{signers}} people</a> that signed this petition.</p>
     </div>
 </body>
 

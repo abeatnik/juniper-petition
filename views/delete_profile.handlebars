@@ -1,0 +1,23 @@
+<body>
+    {{>campaign data=data}}
+    <div class="form-container">
+        <h2>We are sad to see you go, {{name}}!</h2>
+        <p>Come back, if you change your mind.</p>
+                {{#messages}}
+            <p class="error-message">{{.}}</p>
+                {{/messages}}
+        <form method="post">
+                <p class="warning">Are you sure you want to delete your profile? Deleting your profile cannot be undone.</p>
+                <div class="delete-profile">
+                <label for="yes-delete">Yes</label>
+                <input type="checkbox" name="delete" id="delete" value="confirmed">
+                </div>
+                <div class="edit-buttons">
+                    <button type="submit" class="delete-profile delete">Delete Profile</button>
+                <a href="/petition" class="redirect cancel-delete">Cancel</a>
+                </div>
+        </form>
+    </div>
+</body>
+
+

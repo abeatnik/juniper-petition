@@ -12,7 +12,7 @@
 
     function drawSignature(cp1x, cp1y, cp2x, cp2y, x, y) {
         ctx.beginPath();
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "#9ad5f1";
         ctx.lineWidth = 2;
         ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
         ctx.stroke();

@@ -208,12 +208,14 @@ app.get("/thanks", (req, res) => {
     Promise.all([
         db.countSignatures(),
         db.getSignatureById(req.session.userId),
+        db.getUserNameById(req.session.userId),
     ]).then((entryData) => {
         res.render("thanks", {
             title: "Save Berlin's Trees",
             data: campaigndata,
             signers: entryData[0].rows[0].count,
             signatureImage: entryData[1].rows[0].signature,
+            name: entryData[2].rows[0]["first_name"],
         });
     });
 });
@@ -368,6 +370,35 @@ app.post("/edit", (req, res) => {
 app.get("/logout", (req, res) => {
     req.session = null;
     res.redirect("/register");
+});
+
+app.get("/delete-profile", (req, res) => {
+    !req.session.userId && res.redirect("/login");
+    db.getUserNameById(req.session.userId).then((entry) => {
+        res.render("delete_profile", {
+            title: "Delete your profile",
+            data: campaigndata,
+            name: entry.rows[0]["first_name"],
+        });
+    });
+});
+
+app.post("/delete-profile", (req, res) => {
+    if (req.body.delete) {
+        db.deleteAllUserData(req.session.userId).then((deleted) => {
+            req.session = null;
+            res.redirect("/register");
+        });
+    } else {
+        db.getUserNameById(req.session.userId).then((entry) => {
+            res.render("delete_profile", {
+                title: "Delete your profile",
+                data: campaigndata,
+                name: entry.rows[0]["first_name"],
+                messages: ["Please confirm your choice or cancel"],
+            });
+        });
+    }
 });
 
 app.get("/favicon.ico", (req, res) => res.end());

@@ -194,6 +194,46 @@ footer {
     content: "  🖋";
 }
 
+.form-container .delete-profile {
+    margin-top: 20px;
+}
+.form-container .delete-profile input {
+    margin-left: 8px;
+}
+
+.form-container .warning {
+    margin-top: 20px;
+}
+
+.form-container .warning:before {
+    content: "⚠ ";
+}
+
+.form-container #delete-all {
+    background-color: #5f7c67;
+    color: #9ad5f1;
+    border: 2px solid #9ad5f1;
+    font-size: 0.8em;
+    padding: 4px;
+    margin: 0 8px 0 0;
+    max-width: 140px;
+    height: 25px;
+    text-decoration: none;
+    line-height: 12px;
+    text-align: center;
+}
+
+.form-container #delete-all:hover {
+    cursor: default;
+    background-color: #9ad5f1;
+    color: #6e716b;
+    border: 2px solid transparent;
+}
+
+.form-container #delete-all:before {
+    content: "💥 ";
+}
+
 .error-message {
     color: red;
 }
