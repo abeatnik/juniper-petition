@@ -1,8 +1,10 @@
 {{#data}}
 <div class="campaign">
     <h1>{{campaigntext}}</h1>
-    <div class="blur"></div>
-    <p>{{description}}</p>
-    
+    {{#if transition}}
+    <div class="tree-image"></div>
+    {{/if}}
 </div>
+    <p id="campaign-description">{{description}}</p> 
+
 {{/data}}

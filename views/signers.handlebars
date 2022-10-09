@@ -1,10 +1,10 @@
 <body>
     {{>campaign data=data}}
-    <div class="all-signatures">
+    <div class="form-container">
         {{#if location}}
-        <h2>You are among {{count}} people in {{location}} that have signed this petition.</h2>
+        <h2>These {{count}} people from {{location}} have signed this petition:</h2>
         {{else}}
-        <h2>You are among {{count}} people that have signed this petition.</h2>
+        <h2>These {{count}} people  have signed this petition:</h2>
         {{/if}}
         {{#signers}}
         <div class="entry">
@@ -14,15 +14,27 @@
             <p class="name">{{firstname}} {{lastname}}</p>
             {{/if}}
             {{#if age}}
-            <p class="age">, {{age}}</p>
+            <p class="age">· {{age}}</p>
             {{/if}}
             {{#if city}}
-            <p class="city"><a href="/signatures/{{city}}">, {{city}}</a></p>
+            <p class="city">· <a href="/signatures/{{city}}">{{city}}</a></p>
             {{/if}}
+            {{#if withSignatures}}
             <div class="signature-img">
                 <img src="{{signature}}" alt="signature" >
             </div>
+            {{/if}}
         </div>
         {{/signers}}
+        {{#if location}}
+        <br>
+        <a class="redirect" href="/signatures">Show All Signatures</a>
+        {{else}}
+        <div class="edit-buttons">
+            <a class="redirect pen" href="/edit">Edit Profile</a>
+            <a class="redirect quit" href="/logout">Logout</a>
+            <a href="/delete-profile" id="delete-all">Delete Profile</a>
+        </div>
+        {{/if}}
     </div>
 </body>

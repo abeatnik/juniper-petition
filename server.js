@@ -9,7 +9,7 @@ const cookieSession = require("cookie-session");
 const campaigndata = {
     campaigntext: "Save Berlin's Trees",
     description:
-        "Urban trees are dying. They are a key element of urban spaces and crucial for making Berlin a livable city. Their future will be critical for Berlin and the city's inhabitants. With your help Berlin's trees could receive the care that they need.",
+        "Urban trees are dying. They are a key element of urban spaces and important for making Berlin a livable city. Their future will be crucial for Berlin and the city's inhabitants. With your help Berlin's trees could receive the care that they need.",
 };
 
 app.engine("handlebars", engine());
@@ -40,7 +40,6 @@ app.get("/register", (req, res) => {
         : !!req.session.userId && res.redirect("/petition");
     res.render("register", {
         title: "Register",
-        script: "/static/empty.js",
         data: campaigndata,
     });
 });
@@ -74,7 +73,6 @@ app.post("/register", (req, res) => {
     if (messageArr.length !== 0) {
         res.render("register", {
             title: "Register",
-            script: "/static/empty.js",
             data: campaigndata,
             messages: messageArr,
             userData: userData,
@@ -176,17 +174,20 @@ app.post("/profile", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    !req.session.userId
-        ? res.redirect("/register")
-        : !!req.session.signatureId && res.redirect("/thanks");
-    db.getUserNameById(req.session.userId).then((entry) => {
-        res.render("petition", {
-            name: entry.rows[0]["first_name"],
-            title: "Sign the petition",
-            script: "/static/canvas.js",
-            data: campaigndata,
+    if (!req.session.userId) {
+        res.redirect("/register");
+    } else if (!!req.session.signatureId) {
+        res.redirect("/thanks");
+    } else {
+        db.getUserNameById(req.session.userId).then((entry) => {
+            res.render("petition", {
+                name: entry.rows[0]["first_name"],
+                title: "Sign the petition",
+                script: "/static/canvas.js",
+                data: campaigndata,
+            });
         });
-    });
+    }
 });
 
 app.post("/petition", (req, res) => {
