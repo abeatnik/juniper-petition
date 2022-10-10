@@ -4,7 +4,15 @@
     {{#if transition}}
     <div class="tree-image"></div>
     {{/if}}
+    <div id="campaign-description">
+        {{#description}}
+            {{#if ../../animate}}
+                <span class="animate">{{.}}</span>
+            {{else}}
+                <span>{{.}}</span>
+            {{/if}}
+        {{/description}}
+    </div> 
 </div>
-    <p id="campaign-description">{{description}}</p> 
 
 {{/data}}

@@ -122,17 +122,8 @@ module.exports.deleteSignature = (signatureId) => {
 
 module.exports.deleteAllUserData = (userId) => {
     return Promise.all([
-        (userID) => {
-            const sql = `DELETE FROM users WHERE id=$1;`;
-            return db.query(sql, [userId]);
-        },
-        (userID) => {
-            const sql = `DELETE FROM signatures WHERE user_id=$1;`;
-            return db.query(sql, [userId]);
-        },
-        (userID) => {
-            const sql = `DELETE FROM user_profiles WHERE user_id=$1;`;
-            return db.query(sql, [userId]);
-        },
+        db.query(`DELETE FROM signatures WHERE user_id=$1;`, [userId]),
+        db.query(`DELETE FROM user_profiles WHERE user_id=$1;`, [userId]),
+        db.query(`DELETE FROM users WHERE id=$1;`, [userId]),
     ]);
 };

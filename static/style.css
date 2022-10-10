@@ -36,64 +36,119 @@ main {
 .campaign {
     margin: 40px 0 0;
     padding: 10px 40px;
-    width: 100vw;
+    width: 90vw;
     display: flex;
     flex-direction: column;
 }
 
 .campaign > h1 {
-    width: 90wv;
+    align-self: center;
+    font-family: miki;
     background-image: url("./green.jpg");
     background-size: 100%;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 8em;
-    margin-bottom: 20px;
     z-index: 1;
-}
-
-.campaign .tree-image {
-    background-image: url("./green.jpg");
-    background-size: 100%;
-    width: 100vw;
-    height: 180px;
-    box-shadow: 0 0 10px 10px #5f7c67 inset;
-    overflow: hidden;
-    position: absolute;
-    left: 0;
-    top: 40px;
-    z-index: 2;
-    opacity: 0.3;
-    animation: 2s -0.2s 1 revealText;
-}
-
-@keyframes revealText {
-    0% {
-        opacity: 1;
-    }
-    20% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.2;
-    }
 }
 
 #campaign-description {
-    margin: 0 40px 60px;
-    width: 85%;
+    margin: 0 0 40px 60px;
+    width: 95%;
+    z-index: 1;
+}
+
+#campaign-description span {
     font-size: 2em;
     color: #9ad5f1;
-    z-index: 1;
+    opacity: 1;
+}
+
+#campaign-description span[class="animate"]:nth-child(1) {
+    animation: 2s fadeIn1;
+    font-size: 3.5em;
+}
+#campaign-description .animate:nth-child(2) {
+    animation: 4s fadeIn2;
+    font-size: 3.5em;
+}
+#campaign-description .animate:nth-child(3) {
+    animation: 6s fadeIn3;
+    font-size: 3.5em;
+}
+#campaign-description .animate:nth-child(4) {
+    animation: 7s fadeIn4;
+    font-size: 3.5em;
+    padding-bottom: 60px;
 }
 
 .form-container {
     width: 65vw;
     padding: 40px;
     margin-left: 100px;
-    margin-bottom: 20px;
+    margin-bottom: 200px;
     box-shadow: 0 30px 40px rgba(0, 0, 0, 0.15), 0 -30px 40px rgba(0, 0, 0, 0.1);
+    animation: 3.5s 0s 1 fadeIn;
+    color: #9ad5f1;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn1 {
+    0% {
+        opacity: 0;
+        color: #417792;
+    }
+    80% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn2 {
+    0% {
+        opacity: 0;
+    }
+    30% {
+        opacity: 0;
+        color: #417792;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn3 {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0;
+        color: #417792;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn4 {
+    0% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 0;
+        color: #417792;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .form-container form {
