@@ -35,12 +35,15 @@ router.get("/petition", mw.userSignedIn, mw.noSignature, (req, res) => {
 
 router.post("/petition", (req, res) => {
     if (!!req.body.signature) {
-        db.insertSignature(req.body.signature, req.session.userId).then(
-            (entry) => {
+        db.insertSignature(req.body.signature, req.session.userId)
+            .then((entry) => {
                 req.session.signatureId = entry.rows[0].id;
                 res.redirect("/thanks");
-            }
-        );
+            })
+            .catch((err) => {
+                console.log(err.message);
+                res.statusCode(400);
+            });
     } else {
     }
 });
