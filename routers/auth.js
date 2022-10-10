@@ -1,19 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const db = require("../db");
+const mw = require("../middleware");
 const campaigndata = require("../campaigndata.json");
 
-router.get("/", (req, res) => {
-    !!req.session.signatureId
-        ? res.redirect("/thanks")
-        : !!req.session.userId
-        ? res.redirect("/petition")
-        : res.redirect("/register");
+router.get("/", mw.newUser, (req, res) => {
+    res.redirect("/register");
 });
 
-router.get("/register", (req, res) => {
-    !!req.session.signatureId
-        ? res.redirect("/thanks")
-        : !!req.session.userId && res.redirect("/petition");
+router.get("/register", mw.newUser, (req, res) => {
     res.render("register", {
         title: "Register",
         data: campaigndata,
@@ -67,8 +62,7 @@ router.post("/register", (req, res) => {
     }
 });
 
-router.get("/login", (req, res) => {
-    !!req.session.signatureId && res.redirect("/thanks");
+router.get("/login", mw.newUser, (req, res) => {
     res.render("login", {
         title: "Login",
         data: campaigndata,

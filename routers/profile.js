@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const db = require("../db");
+const mw = require("../middleware");
 const campaigndata = require("../campaigndata.json");
 
-router.get("/profile", (req, res) => {
+router.get("/profile", mw.userSignedIn, (req, res) => {
     res.render("profile", {
         title: "Profile",
         data: campaigndata,
@@ -20,21 +22,15 @@ router.post("/profile", (req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.get("/petition", (req, res) => {
-    if (!req.session.userId) {
-        res.redirect("/register");
-    } else if (!!req.session.signatureId) {
-        res.redirect("/thanks");
-    } else {
-        db.getUserNameById(req.session.userId).then((entry) => {
-            res.render("petition", {
-                name: entry.rows[0]["first_name"],
-                title: "Sign the petition",
-                script: "/static/canvas.js",
-                data: campaigndata,
-            });
+router.get("/petition", mw.userSignedIn, mw.noSignature, (req, res) => {
+    db.getUserNameById(req.session.userId).then((entry) => {
+        res.render("petition", {
+            name: entry.rows[0]["first_name"],
+            title: "Sign the petition",
+            script: "/static/canvas.js",
+            data: campaigndata,
         });
-    }
+    });
 });
 
 router.post("/petition", (req, res) => {
@@ -49,8 +45,7 @@ router.post("/petition", (req, res) => {
     }
 });
 
-router.get("/edit", (req, res) => {
-    !req.session.userId && res.redirect("/login");
+router.get("/edit", mw.userSignedIn, (req, res) => {
     db.getUserInfo(req.session.userId).then((entry) => {
         entry = entry.rows[0];
         res.render("edit", {
@@ -157,8 +152,7 @@ router.get("/logout", (req, res) => {
     res.redirect("/register");
 });
 
-router.get("/delete-profile", (req, res) => {
-    !req.session.userId && res.redirect("/login");
+router.get("/delete-profile", mw.userSignedIn, (req, res) => {
     db.getUserNameById(req.session.userId).then((entry) => {
         res.render("delete_profile", {
             title: "Delete your profile",

@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const db = require("../db");
+const mw = require("../middleware");
 const campaigndata = require("../campaigndata.json");
 
-router.get("/thanks", (req, res) => {
-    !req.session.userId
-        ? res.redirect("/register")
-        : !req.session.signatureId && res.redirect("/petition");
+router.get("/thanks", mw.petitionSigned, (req, res) => {
     Promise.all([
         db.countSignatures(),
         db.getSignatureById(req.session.userId),
@@ -28,9 +27,7 @@ router.post("/thanks", (req, res) => {
     });
 });
 
-router.get("/signatures", (req, res) => {
-    !req.session.signatureId && res.redirect("/petition");
-
+router.get("/signatures", mw.petitionSigned, (req, res) => {
     Promise.all([db.countSignatures(), db.getAllSigners()]).then(
         (entryData) => {
             const count = entryData[0].rows[0].count;
@@ -46,8 +43,7 @@ router.get("/signatures", (req, res) => {
     );
 });
 
-router.get("/signatures/:city", (req, res) => {
-    !req.session.signatureId && res.redirect("/petition");
+router.get("/signatures/:city", mw.petitionSigned, (req, res) => {
     Promise.all([
         db.countSignaturesInCity(req.params.city),
         db.getAllSignersByCity(req.params.city),

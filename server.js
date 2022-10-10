@@ -1,15 +1,12 @@
-const db = require("./db");
 const express = require("express");
 const helmet = require("helmet");
 const path = require("path");
 const app = express();
 const { engine } = require("express-handlebars");
 const cookieSession = require("cookie-session");
-const mw = require("./middleware");
 const authRouter = require("./routers/auth");
 const profileRouter = require("./routers/profile");
 const afterSignatureRouter = require("./routers/after-signature");
-const campaigndata = require("./campaigndata.json");
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
