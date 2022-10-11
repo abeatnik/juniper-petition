@@ -205,6 +205,12 @@ main {
     padding: 4px;
     max-width: 120px;
     margin-top: 26px;
+    transition: all 0.7s ease-in-out;
+}
+
+.form-container button[type="submit"]:hover {
+    transform: scale(1.05) translateX(3px);
+    cursor: pointer;
 }
 
 .form-container #discard {
@@ -231,6 +237,10 @@ main {
     border: none;
     max-width: 300px;
     margin-bottom: 20px;
+}
+
+.form-container input:focus {
+    outline: none;
 }
 
 .form-container .edit-buttons {
