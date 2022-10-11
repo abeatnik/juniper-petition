@@ -31,9 +31,20 @@ app.use(
 app.use("/static", express.static(path.join(__dirname, "static")));
 const PORT = 8080;
 
-app.use(helmet());
-
-//https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                "script-src": [
+                    "'self'",
+                    "https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js",
+                ],
+                "style-src": null,
+            },
+        },
+    })
+);
 
 app.use(authRouter);
 app.use(profileRouter);
