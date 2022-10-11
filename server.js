@@ -8,6 +8,8 @@ const authRouter = require("./routers/auth");
 const profileRouter = require("./routers/profile");
 const afterSignatureRouter = require("./routers/after-signature");
 
+//=======DEPLOYED WITH URL: https://save-berlins-trees.herokuapp.com/ ===================
+
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 
@@ -29,11 +31,9 @@ app.use(
 app.use("/static", express.static(path.join(__dirname, "static")));
 const PORT = 8080;
 
-// app.use(
-//     helmet({
-//         contentSecurityPolicy: false,
-//     })
-// );
+app.use(helmet());
+
+//https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js
 
 app.use(authRouter);
 app.use(profileRouter);

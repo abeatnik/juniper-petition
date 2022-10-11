@@ -357,3 +357,46 @@ main {
     font-size: 0.8em;
     max-width: 400px;
 }
+
+@media screen and (max-width: 990px) {
+    .campaign {
+        margin: 40px auto;
+        padding: 10px 10px;
+        width: 90vw;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .campaign h1 {
+        font-size: 5em;
+        background-size: 240%;
+    }
+
+    #campaign-description {
+        margin: 0 0 20px 0;
+        width: 95%;
+        z-index: 1;
+        font-size: 0.8em;
+    }
+
+    .form-container {
+        width: 80vw;
+        padding: 20px;
+        margin: 20px auto 100px;
+    }
+
+    .form-container .edit-buttons {
+        display: flex;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .form-container .edit-buttons button,
+    a {
+        margin: 6px;
+    }
+
+    .form-container .redirect {
+        margin: 6px;
+    }
+}
