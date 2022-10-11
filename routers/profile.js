@@ -42,7 +42,6 @@ router.post("/petition", (req, res) => {
             })
             .catch((err) => {
                 console.log(err.message);
-                res.statusCode(400);
             });
     } else {
     }

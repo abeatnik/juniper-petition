@@ -13,6 +13,7 @@ router.get("/register", mw.newUser, (req, res) => {
         title: "Register",
         data: campaigndata,
         animate: true,
+        autoplay: "autoplay",
     });
 });
 
@@ -73,8 +74,8 @@ router.post("/login", (req, res) => {
     const messageArr = [];
     let email;
     const errorMessage = {
-        email: "E-Mail is required",
-        password: "Incorrect password",
+        email: "Please enter your E-Mail",
+        password: "Please enter your password",
     };
 
     const bodyObj = {
@@ -113,16 +114,22 @@ router.post("/login", (req, res) => {
                         } else {
                             res.redirect("/petition");
                         }
+                    } else {
+                        res.render("login", {
+                            title: "Login",
+                            data: campaigndata,
+                            messages: ["Wrong E-mail or password"],
+                        });
                     }
                 });
             })
-            .catch((err) => {
+            .catch((err) =>
                 res.render("login", {
                     title: "Login",
                     data: campaigndata,
                     messages: ["Wrong E-mail or password"],
-                });
-            });
+                })
+            );
     }
 });
 

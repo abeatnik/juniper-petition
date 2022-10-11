@@ -12,7 +12,27 @@
 }
 
 #canvas {
-    border: 1px solid #313030;
+    border: 1px solid #9ad5f1;
+}
+
+.form-container .signature-field p {
+    font-size: 0.8em;
+    margin-bottom: 6px;
+}
+
+.form-container .signature-field #clear-signature {
+    position: relative;
+    top: -8px;
+    border: 1px solid #9ad5f1;
+}
+
+.form-container #submit-signature {
+    transition: all 0.2s ease-in-out;
+}
+
+.form-container #submit-signature:hover {
+    transform: scale(1.07) translateX(4px);
+    cursor: pointer;
 }
 
 body {
@@ -81,6 +101,18 @@ main {
     animation: 7s fadeIn4;
     font-size: 3.5em;
     padding-bottom: 60px;
+}
+
+.soundscape .sound-icon {
+    position: absolute;
+    right: 100px;
+    top: 60px;
+    color: #9ad5f1;
+    transform: scale(2);
+}
+
+.soundscape audio {
+    display: hidden;
 }
 
 .form-container {
@@ -246,7 +278,7 @@ main {
 }
 
 .form-container .pen:before {
-    content: "🖋 ";
+    content: "📝 ";
 }
 
 .form-container .quit:before {
@@ -255,18 +287,6 @@ main {
 
 .form-container .delete:before {
     content: "💔 ";
-}
-.form-container #sign-here {
-    margin-left: 4px;
-    margin-top: -2px;
-    font-size: 0.8em;
-}
-
-.form-container #sign-here:before {
-    content: "← ";
-}
-.form-container #sign-here:after {
-    content: "  🖋";
 }
 
 .form-container .delete-profile {

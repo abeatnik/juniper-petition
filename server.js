@@ -10,6 +10,15 @@ const afterSignatureRouter = require("./routers/after-signature");
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
+
+if (process.env.NODE_ENV == "production") {
+    app.use((req, res, next) => {
+        if (req.headers["x-forwarded-proto"].startsWith("https")) {
+            return next();
+        }
+        res.redirect(`https://${req.hostname}${req.url}`);
+    });
+}
 app.use(express.urlencoded({ extended: false }));
 app.use(
     cookieSession({
@@ -20,7 +29,11 @@ app.use(
 app.use("/static", express.static(path.join(__dirname, "static")));
 const PORT = 8080;
 
-app.use(helmet());
+// app.use(
+//     helmet({
+//         contentSecurityPolicy: false,
+//     })
+// );
 
 app.use(authRouter);
 app.use(profileRouter);

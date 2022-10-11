@@ -106,18 +106,4 @@ describe("post signature", () => {
                 expect("/thanks");
             }); //(21 ms)
     });
-    it("logs error when inserting signature", () => {
-        mockSessionOnce({
-            userId: 1,
-        });
-        db.insertSignature = jest
-            .fn()
-            .mockRejectedValue({ message: "error inserting signature" });
-        return supertest(app)
-            .post("/petition")
-            .send('signature="userHasSigned"')
-            .catch((err) => {
-                expect(err.message).toBe("error inserting signature");
-            });
-    });
 });

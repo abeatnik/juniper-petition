@@ -4,14 +4,15 @@
         <h2>Welcome {{name}}! You can now sign the petition!</h2>
         <form method="post">
             <div class="signature-field">
+                <p>Sign here:</p>
                 <canvas id="canvas" width="300px" height="150px"></canvas>
-                <label for="signature" id="sign-here"> Sign Here</label>
                 <input type="hidden" name="signature" id="signature" value=""/>
+                <a class="redirect" id="clear-signature" href="/petition">Clear</a>
             </div> 
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit-signature">Add my signature</button>
 
             <div class="edit-buttons">
-                <a class="redirect pen" href="/edit">Edit your Profile</a>
+                <a class="redirect pen" href="/edit">Edit your profile</a>
                 <a class="redirect quit" href="/logout">Logout</a>
             </div> 
         </form>
