@@ -18,7 +18,7 @@
         ctx.stroke();
     }
 
-    canvas.addEventListener("mouseup", () => {
+    document.addEventListener("mouseup", () => {
         dataURL = canvas.toDataURL();
         signature.value = dataURL;
         done = true;
