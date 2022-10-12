@@ -35,6 +35,12 @@ router.post("/register", (req, res) => {
         password: req.body.password.match(pwRegex),
     };
 
+    const emailValidator = /[\w]@[\w]/;
+    if (!bodyObj.email.match(emailValidator)) {
+        bodyObj.email = false;
+        errorMessage.email = "Please enter a valid E-Mail address";
+    }
+
     Object.keys(bodyObj).forEach((key) => {
         if (!bodyObj[key]) {
             messageArr.push(errorMessage[key]);
@@ -79,19 +85,24 @@ router.post("/login", (req, res) => {
     };
 
     const bodyObj = {
-        email: req.body.email,
+        email: !!req.body.email,
         password: !!req.body.password,
     };
+
+    const emailValidator = /[\w]@[\w]/;
+    if (req.body.email.match(emailValidator)) {
+        email = req.body.email;
+    } else {
+        bodyObj.email = false;
+    }
 
     Object.keys(bodyObj).forEach((key) => {
         if (!bodyObj[key]) {
             messageArr.push(errorMessage[key]);
-        } else if (key === "email") {
-            email = bodyObj["email"];
         }
     });
 
-    if (!req.body.email || !req.body.password) {
+    if (!bodyObj.email || !bodyObj.password) {
         res.render("login", {
             title: "Login",
             data: campaigndata,
