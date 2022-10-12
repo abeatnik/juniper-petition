@@ -35,7 +35,7 @@ router.post("/register", (req, res) => {
         password: req.body.password.match(pwRegex),
     };
 
-    const emailValidator = /[\w]@[\w]/;
+    const emailValidator = /.+@.+\..+/;
     if (!bodyObj.email.match(emailValidator)) {
         bodyObj.email = false;
         errorMessage.email = "Please enter a valid E-Mail address";
@@ -89,7 +89,7 @@ router.post("/login", (req, res) => {
         password: !!req.body.password,
     };
 
-    const emailValidator = /[\w]@[\w]/;
+    const emailValidator = /.+@.+\..+/;
     if (req.body.email.match(emailValidator)) {
         email = req.body.email;
     } else {
